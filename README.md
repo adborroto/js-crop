@@ -6,11 +6,15 @@ your web application.
 Cross-platform Compatibility
 ----------------------------
 
-* Firefox ?
-* Safari ?
-* Opera ?
-* Google Chrome ?
-* Internet Explorer ?
+* Firefox 1.5
+* Firefox Mobile 1.0
+* Safari 2.0
+* Safari Mobile 1.0
+* Opera 9.0
+* Opera Mobile ?
+* Google Chrome 1.0
+* Internet Explorer 9.0
+* Android ?
 
 Feature Overview
 ----------------
