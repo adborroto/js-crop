@@ -143,6 +143,22 @@
                     // Without this Firefox will not re-calculate the the image dimensions until drag end
                     $container.offset({ 'left': left, 'top': top });
                 }
+                else
+                {
+                    //Resize when image is more big than max_width or max_height
+                    var imageWidth = $('.resize-image').width();
+                    var imageHeigth = $('.resize-image').height();
+                    var ratio;
+                    if (imageWidth > opt.max_width) {
+                        ratio = (opt.max_width / imageWidth) * 0.5;
+                        resizeImage(imageWidth * ratio, imageHeigth * ratio);
+                    }
+
+                    else if (imageHeigth > opt.max_height) {
+                        ratio = (opt.max_height / imageHeigth) * 0.5;
+                        resizeImage(imageWidth * ratio, imageHeigth * ratio);
+                    }
+                }
             };
 
             var resizeImage = function (width, height) {
