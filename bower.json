@@ -1,0 +1,20 @@
+{
+  "name": "js-crop",
+  "version": "0.1.0",
+  "homepage": "https://github.com/alejandrodominguezborroto/js-crop",
+  "authors": [ "Adborroto" ],
+  "description": "Image cropping plugin for jQuery",
+  "main": [
+    "js/jquery-js-crop.js",
+    "css/jquery-js-crop.css"
+  ],
+  "keywords": [ "img", "image", "form", "crop", "cropping", "cropper","resize" ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "build",
+    "demos",
+    "node_modules",
+    "bower_components"
+  ]
+}

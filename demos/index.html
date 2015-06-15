@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Resizing with Canvas- jQuery plugin</title>
+    <meta name="author" content="Codrops" />
+    <link rel="stylesheet" type="text/css" href="../css/jquery-js-crop.css" />
+    <link rel="stylesheet" type="text/css" href="demo_files/bootstrap.min.css" />
+
+
+    <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <header class="codrops-header"></header>
+            <div class="jumbotron">
+                <h1>Image Resizing &amp; Cropping </h1>
+                <p>jQuery plugin</p>
+            </div>
+            <div class="col-md-2">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <span class="badge top" style="background-color: blueviolet">14</span>
+                        Top:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge left" style="background-color: blueviolet">14</span>
+                        Left:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge width" style="background-color: greenyellow">14</span>
+                        Width:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge height" style="background-color: greenyellow">14</span>
+                        Height:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge imageW" style="background-color: red">14</span>
+                        Image Width:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge imageH" style="background-color: red">14</span>
+                        Image Height:
+                    </li>
+                </ul>
+            </div>
+            <img class="resize-image" src="demo_files/image.jpeg" alt="image for resizing">
+            <br/>
+            <div class="alert alert-info">
+                <strong>Hint:</strong> Hold <span class="disabled">SHIFT</span> while resizing to keep the original aspect ratio.
+            </div>
+        </div>
+    </div>
+    <script src="demo_files/jquery-2.1.1.min.js"></script>
+    <script src="../js/jquery-js-crop.js"></script>
+    <script>
+        $('.resize-image').jsCrop({
+            on_change: function (c) {
+
+                $('.top').html(c.top.toFixed(0));
+                $('.left').html(c.left.toFixed(0));
+                $('.width').html(c.width);
+                $('.height').html(c.height);
+                $('.imageW').html(c.imageW);
+                $('.imageH').html(c.imageH);
+            }
+        });
+    </script>
+</body>
+</html>
