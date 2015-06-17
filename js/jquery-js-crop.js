@@ -17,6 +17,7 @@
      * @param {number} [opts.overlay_height]
      * @param {bool} [opts.resizable]
      * @param {bool} [opts.unlimited]
+     * @param {bool} [opts.constrain]
      * @param {string} [opts.scaleInputId]
      * @param {Function} [opts.on_change]
      */
@@ -32,6 +33,7 @@
             overlay_height: 200,
             resizable: true,
             unlimited: false,
+            constrain: false,
             scaleInputId: null,
             on_change: function (coords) { }
         };
@@ -45,7 +47,7 @@
                 origSrc = new Image(),
                 imageTarget = $(imageT).get(0),
                 eventState = {},
-                constrain = false,
+                constrain = options.constrain,
                 minWidth = options.min_width,
                 minHeight = options.min_height,
                 maxWidth = options.max_width,
