@@ -2,7 +2,7 @@ js-crop image cropping plugin
 ===========================
 
 js-crop is an easy way to add image cropping functionality to
-your web application. 
+your web application. This plugin is inspired by an article of Mike Riethmuller. This plugin was supplemented with new features and configurations.
 Cross-platform Compatibility
 ----------------------------
 
@@ -30,14 +30,81 @@ Contributors
 
 **Special thanks to the following contributors:**
 
-* adborroto
+* Mike Riethmuller (This plugin is inspired by one of his articles)
+
+
+
+## How can I use it?
+
+Include jquery and jquery-js-jcrop plugins
+
+```html
+    <script src="../jquery.js"></script>
+    <script src="../jquery-js-crop.js"></script>
+```
+
+Include CSS styles
+
+```html
+    <link rel="stylesheet" type="text/css" href="../jquery-js-crop.css" />
+```
+
+Call $.jsCrop()
+
+```javascript
+
+//jsCrop must be apply over an image element.
+$(image).jsCrop();
+
+```
+
+## How do I set it up?
+
+* `min_width` : Min width allow to resize. (default: 200)
+* `min_height` : Min height allow to resize. (default: 200)
+* `max_width` : Max width allow to resize. (default: 1920)
+* `max_height` : Max height allow to resize. (default: 1800)
+* `overlay_width` : Crop region width. (default: 200)
+* `overlay_height` : Crop region height. (default: 200)
+* `resizable` : Allow the user resize the image. (default: true)
+* `unlimited` : Allows the user to get out of the boundaries of the crop region. (default: false)
+* `constrain` : Keeps image proportion when resize. (default: false)
+* `on_change` : Raise when image position or dimentions change. (default: function (coords) { })          
+       
+```javascript
+...
+//Example
+$(image).jsCrop({
+    min_width: 300,
+    resizable: false,
+});
+...
+```       
+
+## How do I get selected region?
+
+If you configure on_change in settings, every time the image is resize or move the output funcion is call.
+
+```javascript
+
+//Example
+$(image).jsCrop({
+   on_change: function(coords)
+   {
+       var originalCoords = coords.original; // The values are absolutes to the original image
+       var currentCoords = coords.current; //The values are relatives to the original image
+       //originalCoords.top, originalCoords.left, originalCoords.width (crop region), originalCoords.imageWidth, etc
+       console.log(coords);
+   }
+});
+...
+``` 
 
 MIT License
-===========
+===========      
+#### Copyright (c) 
 
 **js-crop is free software under MIT License.**
-
-#### Copyright (c) 
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
