@@ -24,33 +24,67 @@
             </div>
             <div class="col-md-2">
                 <ul class="list-group">
+                      <li class="list-group-item">
+                       <strong>Current size:</strong> 
+                    </li>
                     <li class="list-group-item">
-                        <span class="badge top" style="background-color: blueviolet">14</span>
+                        <span class="badge top" style="background-color: blueviolet">0</span>
                         Top:
                     </li>
                     <li class="list-group-item">
-                        <span class="badge left" style="background-color: blueviolet">14</span>
+                        <span class="badge left" style="background-color: blueviolet">0</span>
                         Left:
                     </li>
                     <li class="list-group-item">
-                        <span class="badge width" style="background-color: greenyellow">14</span>
+                        <span class="badge width" style="background-color: greenyellow">0</span>
                         Width:
                     </li>
                     <li class="list-group-item">
-                        <span class="badge height" style="background-color: greenyellow">14</span>
+                        <span class="badge height" style="background-color: greenyellow">0</span>
                         Height:
                     </li>
                     <li class="list-group-item">
-                        <span class="badge imageW" style="background-color: red">14</span>
+                        <span class="badge imageW" style="background-color: red">0</span>
                         Image Width:
                     </li>
                     <li class="list-group-item">
-                        <span class="badge imageH" style="background-color: red">14</span>
+                        <span class="badge imageH" style="background-color: red">0</span>
                         Image Height:
                     </li>
                 </ul>
             </div>
-            <img class="resize-image" src="demo_files/image1.jpg" alt="image for resizing">
+            <div class="col-md-2">
+                <ul class="list-group">
+                     <li class="list-group-item">
+                       <strong>Original size:</strong> 
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge otop" style="background-color: blueviolet">0</span>
+                        Top:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge oleft" style="background-color: blueviolet">0</span>
+                        Left:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge owidth" style="background-color: greenyellow">0</span>
+                        Width:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge oheight" style="background-color: greenyellow">0</span>
+                        Height:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge oimageW" style="background-color: red">0</span>
+                        Image Width:
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge oimageH" style="background-color: red">0</span>
+                        Image Height:
+                    </li>
+                </ul>
+            </div>
+            <img class="resize-image" src="demo_files/image.jpeg" alt="image for resizing">
             <br/>
             <div class="alert alert-info">
                 <strong>Hint:</strong> Hold <span class="disabled">SHIFT</span> while resizing to keep the original aspect ratio.
@@ -61,14 +95,23 @@
     <script src="../js/jquery-js-crop.js"></script>
     <script>
         $('.resize-image').jsCrop({
-            on_change: function (c) {
+            on_change: function (coords) {
 
+                var c = coords.current;
                 $('.top').html(c.top.toFixed(0));
                 $('.left').html(c.left.toFixed(0));
                 $('.width').html(c.width);
                 $('.height').html(c.height);
                 $('.imageW').html(c.imageW);
                 $('.imageH').html(c.imageH);
+                
+                c = coords.original;
+                $('.otop').html(c.top.toFixed(0));
+                $('.oleft').html(c.left.toFixed(0));
+                $('.owidth').html(c.width);
+                $('.oheight').html(c.height);
+                $('.oimageW').html(c.imageW);
+                $('.oimageH').html(c.imageH);
             }
         });
     </script>
