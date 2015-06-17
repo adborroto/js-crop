@@ -117,6 +117,8 @@
                 $(document).off('mousemove touchmove', resizing);
                 //Call on_change
                 options.on_change(getCoords());
+                //Put the image inside the the overlay
+                keepInside();
             };
 
             var saveEventState = function (e) {
