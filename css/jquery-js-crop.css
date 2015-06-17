@@ -73,6 +73,10 @@
 	box-sizing: content-box;
 	pointer-events: none;
 }
+.cursor-auto {
+    cursor: auto;
+}
+
 /*
 .resize-overlay:after,
 .resize-overlay:before {

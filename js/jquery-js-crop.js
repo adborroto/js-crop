@@ -1,6 +1,28 @@
-(function ($,document) {
+/**
+ * @license MIT
+ * @author: Alejandro Dominguez Borroto
+ * @description: jQuery plugin that lets you select a region of an image 
+ * @name jquery-js-plugin.js
+ */
 
+(function ($, document) {
+
+    /* 
+     * @param [opts]
+     * @param {number} [opts.min_width]
+     * @param {number} [opts.min_height]
+     * @param {number} [opts.max_width]
+     * @param {number} [opts.max_height]
+     * @param {number} [opts.overlay_width]
+     * @param {number} [opts.overlay_height]
+     * @param {bool} [opts.resizable]
+     * @param {bool} [opts.unlimited]
+     * @param {string} [opts.scaleInputId]
+     * @param {Function} [opts.on_change]
+     */
     $.fn.jsCrop = function (opts) {
+
+        //Defaults values
         var defaults = {
             min_width: 200,
             min_height: 200,
@@ -8,31 +30,38 @@
             max_height: 1800,
             overlay_width: 200,
             overlay_height: 200,
+            resizable: true,
+            unlimited: false,
+            scaleInputId: null,
             on_change: function (coords) { }
         };
 
         var options = $.extend(defaults, opts);
+        var store = {};
 
-
-        var resizeableImage = function (imageT, opt) {
+        var resizeableImage = function (imageT) {
             // Some variable and settings
             var $container,
                 origSrc = new Image(),
                 imageTarget = $(imageT).get(0),
                 eventState = {},
                 constrain = false,
-                minWidth = opt.min_width,
-                minHeight = opt.min_height,
-                maxWidth = opt.max_width,
-                maxHeight = opt.max_height,
-                overlayWidth = opt.overlay_width,
-                overlayHeight = opt.overlay_height,
+                minWidth = options.min_width,
+                minHeight = options.min_height,
+                maxWidth = options.max_width,
+                maxHeight = options.max_height,
+                overlayWidth = options.overlay_width,
+                overlayHeight = options.overlay_height,
                 resizeCanvas = document.createElement('canvas');
 
             var init = function () {
 
                 // When resizing, we will always use this copy of the original as the base
                 origSrc.src = imageTarget.src;
+
+                //Store width and height from real image 
+                store.orgImageW = imageTarget.width;
+                store.orgImageH = imageTarget.height;
 
                 // Wrap the image with the container and add resize handles
                 $(imageTarget).wrap('<div class="resize-component"></div>')
@@ -45,19 +74,31 @@
                 .after('<span class="resize-handle resize-handle-sw"></span>');
 
                 //Setting overlay dimentions
-                $('.resize-overlay').css({ width: overlayWidth+ 'px', height: overlayHeight+'px' });
+                $('.resize-overlay').css({ width: overlayWidth + 'px', height: overlayHeight + 'px' });
 
-                
-                
                 // Assign the container to a variable
                 $container = $(imageTarget).parent('.resize-container');
 
                 // Add events
-                $container.on('mousedown touchstart', '.resize-handle', startResize);
+                if (options.resizable)
+                    $container.on('mousedown touchstart', '.resize-handle', startResize);
+                else
+                    $('.resize-handle').css({ cursor: 'auto' });
+
                 $container.on('mousedown touchstart', 'img', startMoving);
 
                 //Call on_change
-                opt.on_change(getCoords());
+                options.on_change(getCoords());
+
+                //Handle scale resize
+                if (options.scaleInputId) {
+                    $('#' + options.scaleInputId).change(function (e) {
+                        var scale = $(this).val();
+                        scaleImage(scale);
+                    });
+                }
+                //Put the image inside the the overlay
+                keepInside();
             };
 
             var startResize = function (e) {
@@ -73,7 +114,7 @@
                 $(document).off('mouseup touchend', endResize);
                 $(document).off('mousemove touchmove', resizing);
                 //Call on_change
-                opt.on_change(getCoords());
+                options.on_change(getCoords());
             };
 
             var saveEventState = function (e) {
@@ -143,31 +184,47 @@
                     // Without this Firefox will not re-calculate the the image dimensions until drag end
                     $container.offset({ 'left': left, 'top': top });
                 }
-                else
-                {
+                else {
                     //Resize when image is more big than max_width or max_height
                     var imageWidth = $('.resize-image').width();
                     var imageHeigth = $('.resize-image').height();
                     var ratio;
-                    if (imageWidth > opt.max_width) {
-                        ratio = (opt.max_width / imageWidth) * 0.5;
+                    if (imageWidth > options.max_width) {
+                        ratio = (options.max_width / imageWidth) * 0.5;
                         resizeImage(imageWidth * ratio, imageHeigth * ratio);
                     }
 
-                    else if (imageHeigth > opt.max_height) {
-                        ratio = (opt.max_height / imageHeigth) * 0.5;
+                    else if (imageHeigth > options.max_height) {
+                        ratio = (options.max_height / imageHeigth) * 0.5;
                         resizeImage(imageWidth * ratio, imageHeigth * ratio);
                     }
                 }
+            };
+
+            var scaleImage = function (scale) {
+
+                var newWidth = store.orgImageW * scale;
+                var newHeight = store.orgImageH * scale;
+
+                if (newWidth < options.min_width || newHeight < options.min_height) {
+
+                    var newScaleW = options.min_width / newWidth;
+                    var newScaleH = options.min_height / newHeight;
+                    newWidth = newWidth * Math.max(newScaleH, newScaleW);
+                    newHeight = newHeight * Math.max(newScaleH, newScaleW);
+                }
+                resizeImage(newWidth, newHeight);
+                keepInside();
             };
 
             var resizeImage = function (width, height) {
                 resizeCanvas.width = width;
                 resizeCanvas.height = height;
                 resizeCanvas.getContext('2d').drawImage(origSrc, 0, 0, width, height);
-                $(imageTarget).attr('src', resizeCanvas.toDataURL("image/png"));
+                var src = resizeCanvas.toDataURL("image/png");
+                $(imageTarget).attr('src', src);
             };
-
+            
             var startMoving = function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -182,7 +239,7 @@
                 $(document).off('mousemove touchmove', moving);
 
                 //Call on_change
-                opt.on_change(getCoords());
+                options.on_change(getCoords());
             };
 
             var moving = function (e) {
@@ -194,10 +251,13 @@
 
                 mouse.x = (e.clientX || e.pageX || touches[0].clientX) + $(window).scrollLeft();
                 mouse.y = (e.clientY || e.pageY || touches[0].clientY) + $(window).scrollTop();
+
+
                 $container.offset({
                     'left': mouse.x - (eventState.mouse_x - eventState.container_left),
                     'top': mouse.y - (eventState.mouse_y - eventState.container_top)
                 });
+                keepInside();
                 // Watch for pinch zoom gesture while moving
                 if (eventState.touches && eventState.touches.length > 1 && touches.length > 1) {
                     var width = eventState.container_width, height = eventState.container_height;
@@ -222,6 +282,40 @@
                 }
             };
 
+            var keepInside = function () {
+
+                if (options.unlimited)
+                    return;
+                
+                //Keep image inside region
+                var left = $('.resize-overlay').offset().left - $container.offset().left;
+                var top = $('.resize-overlay').offset().top - $container.offset().top;
+                var imageWidth = $('.resize-image').width();
+                var imageHeight = $('.resize-image').height();
+
+                if (left < 0) {
+                    $container.offset({
+                        'left': $('.resize-overlay').offset().left,
+                    });
+                }
+                if (top < 0) {
+                    $container.offset({
+                        'top': $('.resize-overlay').offset().top,
+                    });
+                }
+                if (left + options.overlay_width > imageWidth) {
+                    $container.offset({
+                        'left': $('.resize-overlay').offset().left - imageWidth + options.overlay_width,
+                    });
+                }
+                if (top + options.overlay_height > imageHeight) {
+                    $container.offset({
+                        'top': $('.resize-overlay').offset().top - imageHeight + options.overlay_height,
+                    });
+                }
+
+            };
+
             var getCoords = function () {
 
                 var left = $('.resize-overlay').offset().left - $container.offset().left;
@@ -229,23 +323,35 @@
                 var width = $('.resize-overlay').width();
                 var height = $('.resize-overlay').height();
                 var imageWidth = $('.resize-image').width();
-                var imageHeigth = $('.resize-image').height();
+                var imageHeight = $('.resize-image').height();
+
                 return {
-                    left: left,
-                    top: top,
-                    width: width,
-                    height: height,
-                    imageW: imageWidth,
-                    imageH: imageHeigth
+                    current: {
+                        left: left,
+                        top: top,
+                        width: width,
+                        height: height,
+                        imageWidth: imageWidth,
+                        imageHeight: imageHeight,
+                    },
+                    original: {
+                        left: (store.orgImageW / imageWidth) * left,
+                        top: (store.orgImageH / imageHeight) * top,
+                        width: width,
+                        height: height,
+                        imageWidth: store.orgImageW,
+                        imageHeight: store.orgImageH,
+                    }
                 };
+
             };
 
             init();
         };
 
-        return resizeableImage($(this), options);
+        return resizeableImage($(this));
     };
 
 
 
-})(jQuery,document);
+})(jQuery, document);
